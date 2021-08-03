@@ -4,6 +4,8 @@ import { compose } from "redux";
 import DateObject from "react-date-object";
 import Button from '@material-ui/core/Button';
 import { makeStyles } from "@material-ui/core";
+import { Redirect } from "react-router-dom";
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles({
     btn: {
@@ -19,6 +21,9 @@ const DeadlineDetail = (props) => {
 
     const deadline = props.deadline;
     const classes = useStyles();
+    const uid = props.uid;
+
+    if(!uid) return <Redirect to="/signin" />
 
     if(deadline) {
         return (
@@ -53,7 +58,9 @@ const DeadlineDetail = (props) => {
     else {
         return (
             <div className="deadline-detail-container">
-                <p>Loading...</p>
+                <p style={{
+                    textAlign: "center"
+                }}><CircularProgress /></p>
             </div>
         );
     }
@@ -66,7 +73,8 @@ const mapStateToProps = (state) => {
     const deadlines = state.firestore.data.deadlines;
     const deadline = deadlines ? deadlines[deadlineid] : null
     return {
-        deadline: deadline
+        deadline: deadline,
+        uid: state.firebase.auth.uid
     }
 }
 

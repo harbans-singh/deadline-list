@@ -2,9 +2,12 @@ import { Component } from 'react'
 import Container from '@material-ui/core/Container';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-// import { makeStyles } from '@material-ui/core';
 import { withStyles } from "@material-ui/core/styles";
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
+import { compose } from "redux";
+import { connect } from "react-redux";
+import { Redirect } from "react-router-dom";
+import { signUp } from "../../actions/authActions";
 
 const styles = (theme) => ({
     btn: {
@@ -22,20 +25,27 @@ const styles = (theme) => ({
 
 class SignUp extends Component {
     state = {
+        firstName: "",
+        lastName: "",
         email: "",
         password: ""
     }
 
-    componentDidMount() {
-        console.log("Sign Up Mounted");
-    }
+    handleChange = (e) => {
+        this.setState({
+            [e.target.id]: e.target.value,
+        });
+    };
 
-    componentWillUnmount() {
-        console.log("Sign Up Unmounted");
+    handleSubmit = (e) => {
+        e.preventDefault();
+        // console.log(this.state);
+        this.props.signUp(this.state); 
     }
 
     render() {
-        const { classes } = this.props;
+        const { classes, uid } = this.props;
+        if(uid) return <Redirect to="/" />
         return (
             <Container maxWidth='sm'>
                 <form className="container" noValidate autoComplete="off" style={{
@@ -53,46 +63,51 @@ class SignUp extends Component {
 
                     <TextField
                         className={classes.field}
-                        id="signup-firstname"
+                        id="firstName"
                         label="First Name"
                         type="text"
                         variant="outlined"
                         fullWidth
-                        required />
+                        required
+                        onChange={this.handleChange} />
                     
                     <TextField
                         className={classes.field}
-                        id="signup-lastname"
+                        id="lastName"
                         label="Last Name"
                         type="text"
                         variant="outlined"
                         fullWidth
-                        required />
+                        required
+                        onChange={this.handleChange} />
                     
                     <TextField
                         className={classes.field}
-                        id="signup-email"
+                        id="email"
                         label="Email"
                         type="text"
                         variant="outlined"
                         fullWidth
-                        required />
+                        required
+                        onChange={this.handleChange} />
 
                     <TextField
                         className={classes.field}
-                        id="filled-password-input"
+                        id="password"
                         label="Password"
                         type="password"
                         autoComplete="current-password"
                         variant="outlined"
+                        helperText="should be at least 6 characters long"
                         fullWidth
-                        required />
+                        required
+                        onChange={this.handleChange} />
 
                     <Button
                         className={classes.btn}
                         variant="contained"
                         color="secondary"
-                        onClick={() => console.log("Sign Up Button Clicked")}
+                        onClick={ this.handleSubmit }
                         endIcon={<KeyboardArrowRightIcon />}>
                         SIGN UP
                     </Button>
@@ -102,4 +117,19 @@ class SignUp extends Component {
     }
 }
 
-export default withStyles(styles, { withTheme: true })(SignUp);
+const mapStateToProps = (state) => {
+    return {
+        uid: state.firebase.auth.uid
+    };
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        signUp: (creds) => dispatch(signUp(creds))
+    }
+}
+
+export default compose(
+    withStyles(styles, { withTheme: true }),
+    connect(mapStateToProps, mapDispatchToProps)
+)(SignUp);

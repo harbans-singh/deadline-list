@@ -2,9 +2,12 @@ import { Component } from 'react'
 import Container from '@material-ui/core/Container';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-// import { makeStyles } from '@material-ui/core';
 import { withStyles } from "@material-ui/core/styles";
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
+import { compose } from "redux";
+import { connect } from "react-redux";
+import { signIn } from "../../actions/authActions";
+import { Redirect } from "react-router-dom";
 
 const styles = (theme) => ({
     btn: {
@@ -26,22 +29,25 @@ class SignIn extends Component {
         password: ""
     }
 
-    componentDidMount() {
-        console.log("Sign In Mounted");
-    }
+    handleChange = (e) => {
+        this.setState({
+            [e.target.id]: e.target.value,
+        });
+    };
 
-    componentWillUnmount() {
-        console.log("Sign In Unmounted");
+    handleSubmit = (e) => {
+        e.preventDefault();
+        this.props.signIn(this.state) 
     }
 
     render() {
-        const { classes } = this.props;
-
+        const { classes, uid } = this.props;
+        if(uid) return <Redirect to="/" />
         return (
             <Container maxWidth='sm'>
                 <form className="container" noValidate autoComplete="off" style={{
                     padding: "1em"
-                }}>
+                }} >
                 <div className="head" style={{
                         backgroundColor: "#e53935",
                         margin: "20px auto",
@@ -54,28 +60,30 @@ class SignIn extends Component {
 
                     <TextField
                         className={classes.field}
-                        id="outlined-basic"
+                        id="email"
                         label="Email"
                         type="text"
                         variant="outlined"
                         fullWidth
-                        required />
+                        required
+                        onChange={this.handleChange} />
 
                     <TextField
                         className={classes.field}
-                        id="filled-password-input"
+                        id="password"
                         label="Password"
                         type="password"
                         autoComplete="current-password"
                         variant="outlined"
                         fullWidth
-                        required />
+                        required
+                        onChange={this.handleChange} />
 
                     <Button
                         className={classes.btn}
                         variant="contained"
                         color="secondary"
-                        onClick={() => console.log("Sign In Button Clicked")}
+                        onClick={ this.handleSubmit }
                         endIcon={<KeyboardArrowRightIcon />}>
                         SIGN IN
                     </Button>
@@ -85,4 +93,19 @@ class SignIn extends Component {
     }
 }
 
-export default withStyles(styles, { withTheme: true })(SignIn);
+const mapStateToProps = (state) => {
+    return {
+        uid: state.firebase.auth.uid
+    };
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        signIn: (creds) => dispatch(signIn(creds))
+    }
+}
+
+export default compose(
+    withStyles(styles, { withTheme: true }),
+    connect(mapStateToProps, mapDispatchToProps)
+)(SignIn);

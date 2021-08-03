@@ -18,3 +18,24 @@ export const addDeadline = (deadline) => {
             });
     };
 };
+
+export const removeDeadline = (deadline) => {
+    return (dispatch, getState, { getFirebase }) => {
+        const firestore = getFirebase().firestore();
+        firestore
+            .collection("deadlines")
+            .doc(deadline.id)
+            .delete()
+            .then(() => {
+                dispatch({
+                    type: "REMOVED_DEADLINE"
+                });
+            })
+            .catch((err) => {
+                dispatch({
+                    type: "REMOVED_DEADLINE_ERR",
+                    err
+                });
+            });
+    };
+};

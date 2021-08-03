@@ -5,6 +5,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { Link } from "react-router-dom";
 import { makeStyles } from '@material-ui/core';
+import { connect } from "react-redux";
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -19,30 +20,30 @@ const useStyles = makeStyles((theme) => {
     }
 })
 
-const Navbar = () => {
+const Navbar = (props) => {
     const classes = useStyles();
+    const { uid } = props;
+    const links = uid ? <SignedInLinks /> : <SignedOutLinks />
+    
     return (
         <AppBar position="static" className={classes.navbar}>
             <Toolbar>
                 <Typography className={classes.title} component={'span'}>
-                    <Link to="/" style={{color: "white", textDecoration: "none"}}>Deadlines</Link>
+                    <Link to="/" style={{ color: "white", textDecoration: "none" }}>Deadlines</Link>
                 </Typography>
                 <Typography component={'span'}>
-                    <SignedInLinks />
-                </Typography>
-                <Typography component={'span'}>
-                    <SignedOutLinks />
+                    {links}
                 </Typography>
             </Toolbar>
-            {/* <div className="navbar"> */}
-                {/* <div className="nav-head"><h2><Link to="/">All your  deadlines in one place</Link></h2></div> */}
-                {/* <div className="nav-links"> */}
-                    {/* <SignedInLinks /> */}
-                    {/* <SignedOutLinks /> */}
-                {/* </div> */}
-            {/* </div> */}
         </AppBar>
     );
 }
 
-export default Navbar;
+const mapStateToProps = (state) => {
+    const uid = state.firebase.auth.uid
+    return {
+        uid: uid
+    }
+}
+
+export default connect(mapStateToProps)(Navbar);

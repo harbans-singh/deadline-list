@@ -2,8 +2,11 @@ import { firestoreConnect } from 'react-redux-firebase';
 import { compose } from 'redux';
 import { connect } from "react-redux"
 import DeadlineList from '../deadlines/DeadlinesList';
+import { Redirect } from "react-router-dom"
 
-const Dashboard = ({deadlines}) => {
+const Dashboard = ({deadlines, uid}) => {
+    if(!uid) return <Redirect to="/signin" />
+
     return (
         <div>
             <DeadlineList deadlines={deadlines} />
@@ -12,7 +15,8 @@ const Dashboard = ({deadlines}) => {
 }
 const mapStateToProps = (state) => {
     return {
-        deadlines: state.firestore.ordered.deadlines
+        deadlines: state.firestore.ordered.deadlines,
+        uid: state.firebase.auth.uid
     };
 }
 

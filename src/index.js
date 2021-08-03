@@ -9,30 +9,47 @@ import thunk from 'redux-thunk';
 import { getFirebase, ReactReduxFirebaseProvider } from 'react-redux-firebase';
 import firebase from './config/firebaseConfig';
 import { createFirestoreInstance } from 'redux-firestore';
-
+import { useSelector } from 'react-redux';
+import { isLoaded } from 'react-redux-firebase';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 const store = createStore(rootReducer, applyMiddleware(thunk.withExtraArgument({
   getFirebase
 })));
 
-// const rrfConfig = {
-//   userProfile: 'users',
-//   useFirestoreForProfile: true // Firestore for Profile instead of Realtime DB
-// }
+const rrfConfig = {
+  userProfile: "users",
+  useFirestoreForProfile: true
+}
 
 const rrfProps = {
   firebase,
-  // config: rrfConfig,
-  config: {},
+  config: rrfConfig,
+  // config: {},
   dispatch: store.dispatch,
   createFirestoreInstance
 };
 
+
+function AuthIsLoaded({ children }) {
+  const auth = useSelector(state => state.firebase.auth)
+  if (!isLoaded(auth))
+    return (
+    <div>
+      <LinearProgress />
+    </div>
+    );
+  return children;
+}
+
+
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <ReactReduxFirebaseProvider {...rrfProps}> 
+      <ReactReduxFirebaseProvider {...rrfProps}>
+        <AuthIsLoaded> 
           <App />
+        </AuthIsLoaded>
       </ReactReduxFirebaseProvider>
     </Provider>
   </React.StrictMode>,

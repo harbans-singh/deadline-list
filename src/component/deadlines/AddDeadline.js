@@ -11,6 +11,7 @@ import { TimePicker, DatePicker } from '@material-ui/pickers';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import "date-fns"
+import { Redirect } from "react-router-dom"
 
 const styles = () => ({
     btn: {
@@ -26,7 +27,7 @@ const styles = () => ({
     }
 })
 
-class SignIn extends Component {
+class AddDeadline extends Component {
     state = {
         title: "",
         detail: "",
@@ -51,7 +52,9 @@ class SignIn extends Component {
     };
 
     render() {
-        const { classes } = this.props;
+        const { classes, uid } = this.props;
+        if(!uid) return <Redirect to="/signin" />
+
         return (
             <Container maxWidth='sm'>
                 <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -141,6 +144,12 @@ class SignIn extends Component {
     }
 }
 
+const mapStateToProps = (state) => {
+    return {
+        uid: state.firebase.auth.uid
+    };
+}
+
 const mapDispatchToProps = (dispatch) => {
     return {
         addDeadline: deadline => dispatch(addDeadline(deadline))
@@ -149,5 +158,5 @@ const mapDispatchToProps = (dispatch) => {
 
 export default compose(
     withStyles(styles, { withTheme: true }),
-    connect(null, mapDispatchToProps)
-)(SignIn);
+    connect(mapStateToProps, mapDispatchToProps)
+)(AddDeadline);
