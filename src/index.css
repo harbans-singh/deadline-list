@@ -7,7 +7,135 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+.dashboard {
+  /* display: inline-block; */
+  width: 80%;
+  margin: 1.5em auto;
+}
+.dashboard a {
+  color: black;
+  text-decoration: none;
+}
+.dashboard a:hover {
+  color: red;
+}
+.dashboard-container {
+  /* width: 85%; */
+  margin: 1em auto;
+  height: 8em;
+  border-bottom: 1px solid #e7e7e7;
+  align-items: center;
+  display: flex;
+  padding: 0 1.4em;
+  box-sizing: border-box;
+  border-radius: 5px;
+  overflow: hidden;
+}
+.dashboard-container:hover {
+  box-shadow: 1px 3px 5px rgb(173, 173, 173);
+  transform: scale(1.02);
+  transition-duration: 100ms;
+}
+.deadline-title {
+  font-size: 1.4em;
+  max-width: 550px;
+  font-weight: bold;
+}
+.signed-in-links, .signed-out-links {
+  font-size: 1em;
+}
+.signed-in-links a, .signed-out-links a {
+  color: white;
+  text-decoration: none;
+  margin: 0 0.4em;
+  float: left;
+}
+.countdown-box {
+  color: white;
+  max-height: 8em;
+  margin-left: auto;
+  max-width: 300px;
+}
+.countdown-box span {
+  font-size: 0.8em;
+  color: black;
+}
+.single-box {
+  display: inline-block;
+  text-align: center;
+  margin: 0.4em 0.4em;
+}
+.big-text {
+  box-sizing: border-box;
+  text-align: center;
+  background-color: gray;
+  width: 2.5em;
+  height: 2.5em;
+  font-weight: bold;
+  font-size: 1.3em;
+  margin: 0px;
+  border-radius: 7px;
+  padding-top: 0.7rem;
+}
+.deadline-detail-container {
+  width: 55%;
+  margin: 2.5em auto;
+}
+.deadline-detail {
+  text-align: center;
+  padding: 1.4em 1.4em 2em 1.4em;
+  border-radius: 8px;
+  box-shadow: 1px 4px 8px rgb(173, 173, 173);
+  /* word-wrap: break-word; */
+}
+.deadline-detail-title {
+  font-size: 1.4em;
+  font-weight: bold;
+}
+.deadline-detail-body {
+  min-height: 5em;
+}
+.deadline-detail-date, .deadline-detail-time {
+  text-align: left;
+  font-size: 0.9em;
+}
+@media screen and (max-width: 600px) {
+  .dashboard {
+    width: 85%;
+  }
+  .dashboard-container {
+    display: list-item;
+    height: 10em;
+  }
+  .signed-in-links, .signed-out-links {
+    font-size: 0.9em;
+  }
+  .countdown-box {
+    font-size: 0.8em;
+  }
+  .single-box {
+    text-align: center;
+    margin: 0.3em 0.3em
+  }
+  .deadline-title {
+    font-size: 1em;
+    margin-top: 1.2em;
+  }
+  .deadline-detail-container {
+    width: 90%;
+    margin: 2.5em auto;
+  }
+  .deadline-detail {
+    padding: 1.4em 1.4em 1.5em 1.4em;
+  }
+  .deadline-detail-body {
+    min-height: 4em;
+    font-size: 0.9em;
+  }
+  .deadline-detail-title {
+    font-size: 1.2em;
+  }
+  .deadline-detail-time, .deadline-detail-date {
+    font-size: 0.7em;
+  }
 }
