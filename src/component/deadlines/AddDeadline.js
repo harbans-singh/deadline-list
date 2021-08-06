@@ -54,7 +54,6 @@ class AddDeadline extends Component {
     render() {
         const { classes, uid } = this.props;
         if(!uid) return <Redirect to="/signin" />
-        console.log(this.props);
         return (
             <Container maxWidth='sm'>
                 <MuiPickersUtilsProvider utils={DateFnsUtils}>

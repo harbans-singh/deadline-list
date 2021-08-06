@@ -15,10 +15,16 @@ const useStyles = makeStyles((theme) => {
         },
         title: {
             flexGrow: 1,
-            fontSize: '1.5em'
+            fontSize: '1.5em',
+            [theme.breakpoints.down('xs')]: {
+                fontSize: "1.2em"
+            },
         },
         toolbarheight :{
-            minHeight: 75
+            minHeight: 75,
+            [theme.breakpoints.down('xs')]: {
+                minHeight: 65
+            },
         }
     }
 })
