@@ -6,23 +6,20 @@ import { compose } from 'redux';
 import { connect } from "react-redux";
 import { firestoreConnect } from 'react-redux-firebase';
 
-const DeadlineList = ({deadlines, uid}) => {
+const DeadlineList = ({ deadlines }) => {
 
-    // const deadlines = props.deadlines;
-    // console.log(deadlines);
-
-    return (
-        <div className="dashboard">
-            {deadlines && deadlines.map((deadline) => (
-                <Link to={`/deadline/${deadline.id}`} key={deadline.id}>
-                    <div className="dashboard-container">
-                        <div className="deadline-title"> {deadline.title} </div>
-                        <Timer date={new DateObject(deadline.date.seconds * 1000)} />
-                    </div>
-                </Link>
-            ))}
-        </div>
-    );
+        return (
+            <div className="dashboard">
+                {deadlines && deadlines.map((deadline) => (
+                    <Link to={`/deadline/${deadline.id}`} key={deadline.id}>
+                        <div className="dashboard-container">
+                            <div className="deadline-title"> {deadline.title} </div>
+                            <Timer date={new DateObject(deadline.date.seconds * 1000)} />
+                        </div>
+                    </Link>
+                ))}
+            </div>
+        );
 }
 
 const mapStateToProps = (state) => {
