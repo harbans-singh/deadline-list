@@ -53,7 +53,8 @@ class AddDeadline extends Component {
 
     render() {
         const { classes, uid } = this.props;
-        if(!uid) return <Redirect to="/signin" />   
+        if(!uid) return <Redirect to="/signin" />
+        console.log(this.props);
         return (
             <Container maxWidth='sm'>
                 <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -92,17 +93,6 @@ class AddDeadline extends Component {
                             fullWidth
                             required
                             onChange={this.handleChange} />
-
-                        {/* <TextField
-                            className={classes.field}
-                            id="date"
-                            label="Date &#38; Time"
-                            type="text"
-                            variant="outlined"
-                            fullWidth
-                            required
-                            helperText="Format: YYYY MM DD HH MM SS"
-                            onChange={this.handleChange} /> */}
 
                         <DatePicker
                             className={classes.field}

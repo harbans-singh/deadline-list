@@ -2,9 +2,13 @@ import Timer from '../timer/Timer';
 import { Link } from 'react-router-dom';
 import DateObject from "react-date-object";
 
-const DeadlineList = (props) => {
+import { compose } from 'redux';
+import { connect } from "react-redux";
+import { firestoreConnect } from 'react-redux-firebase';
 
-    const deadlines = props.deadlines;
+const DeadlineList = ({deadlines, uid}) => {
+
+    // const deadlines = props.deadlines;
     // console.log(deadlines);
 
     return (
@@ -21,4 +25,20 @@ const DeadlineList = (props) => {
     );
 }
 
-export default DeadlineList;
+const mapStateToProps = (state) => {
+    return {
+        deadlines: state.firestore.ordered.deadlines,
+        uid: state.firebase.auth.uid
+    }
+}
+
+export default compose(
+    connect(mapStateToProps),
+    firestoreConnect(ownProps => [
+        {
+            collection: "deadlines",
+            where: ["authorId", "==", ownProps.uid],
+            orderBy: ['date', 'asc']
+        }
+    ])
+)(DeadlineList);
