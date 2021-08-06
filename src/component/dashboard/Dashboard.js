@@ -5,6 +5,7 @@ import DeadlineList from '../deadlines/DeadlinesList';
 import { Redirect } from "react-router-dom"
 
 const Dashboard = ({deadlines, uid}) => {
+
     if(!uid) return <Redirect to="/signin" />
 
     return (
@@ -22,7 +23,11 @@ const mapStateToProps = (state) => {
 
 export default compose(
     connect(mapStateToProps),
-    firestoreConnect((ownProps) => [
-        { collection: "deadlines" }
+    firestoreConnect(ownProps => [
+        {
+            collection: "deadlines",
+            where: ["authorId", "==", ownProps.uid],
+            orderBy: ['date', 'asc']
+        }
     ])
 )(Dashboard);

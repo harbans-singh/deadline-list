@@ -10,8 +10,8 @@ import { compose } from 'redux';
 import { TimePicker, DatePicker } from '@material-ui/pickers';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
-import "date-fns"
-import { Redirect } from "react-router-dom"
+import "date-fns";
+import { Redirect } from "react-router-dom";
 
 const styles = () => ({
     btn: {
@@ -33,6 +33,7 @@ class AddDeadline extends Component {
         detail: "",
         date: new Date()
     }
+
     handleChange = (e) => {
         this.setState({
             [e.target.id]: e.target.value
@@ -42,7 +43,6 @@ class AddDeadline extends Component {
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.addDeadline(this.state);
-        console.log(this.state);
     }
 
     handleDate = (date) => {
@@ -53,8 +53,7 @@ class AddDeadline extends Component {
 
     render() {
         const { classes, uid } = this.props;
-        if(!uid) return <Redirect to="/signin" />
-
+        if(!uid) return <Redirect to="/signin" />   
         return (
             <Container maxWidth='sm'>
                 <MuiPickersUtilsProvider utils={DateFnsUtils}>

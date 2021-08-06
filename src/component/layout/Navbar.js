@@ -16,6 +16,9 @@ const useStyles = makeStyles((theme) => {
         title: {
             flexGrow: 1,
             fontSize: '1.5em'
+        },
+        toolbarheight :{
+            minHeight: 75
         }
     }
 })
@@ -26,8 +29,8 @@ const Navbar = (props) => {
     const links = uid ? <SignedInLinks /> : <SignedOutLinks />
     
     return (
-        <AppBar position="static" className={classes.navbar}>
-            <Toolbar>
+        <AppBar position="sticky" className={classes.navbar}>
+            <Toolbar className={classes.toolbarheight}>
                 <Typography className={classes.title} component={'span'}>
                     <Link to="/" style={{ color: "white", textDecoration: "none" }}>Deadlines</Link>
                 </Typography>

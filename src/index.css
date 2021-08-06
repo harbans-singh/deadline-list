@@ -42,7 +42,10 @@ body {
   font-weight: bold;
 }
 .signed-in-links, .signed-out-links {
+  display: flex;
+  flex-wrap: wrap;
   font-size: 1em;
+  align-items: center;
 }
 .signed-in-links a, .signed-out-links a {
   color: white;
