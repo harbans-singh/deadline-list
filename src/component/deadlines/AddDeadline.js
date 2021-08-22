@@ -1,67 +1,162 @@
-import { Component } from 'react'
 import Container from '@material-ui/core/Container';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import { withStyles } from "@material-ui/core/styles";
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import { connect } from "react-redux"
 import { addDeadline } from '../../actions/deadlineActions';
-import { compose } from 'redux';
 import { TimePicker, DatePicker } from '@material-ui/pickers';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import "date-fns";
 import { Redirect } from "react-router-dom";
+import { useState } from "react"
+import { makeStyles } from "@material-ui/core";
+import { useHistory } from "react-router-dom";
+import { createTheme, ThemeProvider } from "@material-ui/core";
+import { toast } from "react-toastify";
 
-const styles = () => ({
+const theme = createTheme({
+    palette: {
+        primary: {
+            light: "#4d71a1",
+            main: "#4d71a1",
+            dark: "#4d71a1"
+        }
+    },
+    typography: {
+        fontFamily: "Ubuntu",
+        fontWeightLight: 300,
+        fontWeightRegular: 400,
+        fontWeightMedium: 500,
+        fontWeightBold: 700, 
+    },
+    overrides: {
+        // MuiPickersToolbar: {
+        //     toolbar: {
+        //         backgroundColor: "#293852",
+        //     },
+        // },
+        // MuiPickersCalendarHeader: {
+        //     switchHeader: {
+        //         backgroundColor: "red",
+        //         color: "white",
+        //     },
+        // },
+        MuiPickersDay: {
+            day: {
+                color: "black",
+            },
+            // daySelected: {
+            //     backgroundColor: "#436185",
+            //     '&:hover': {
+            //         backgroundColor: '#293852'
+            //     }
+            // },
+            dayDisabled: {
+                color: "lightgrey",
+            },
+            current: {
+                color: "#4d71a1",
+            }
+        },
+    },
+})
+
+// const materialTheme = createTheme({
+//     overrides: {
+//         MuiPickersToolbar: {
+//             toolbar: {
+//                 backgroundColor: "#293852",
+//             },
+//         },
+//         // MuiPickersCalendarHeader: {
+//         //     switchHeader: {
+//         //         backgroundColor: "red",
+//         //         color: "white",
+//         //     },
+//         // },
+//         MuiPickersDay: {
+//             day: {
+//                 color: "black",
+//             },
+//             // daySelected: {
+//             //     backgroundColor: "#436185",
+//             //     '&:hover': {
+//             //         backgroundColor: '#293852'
+//             //     }
+//             // },
+//             dayDisabled: {
+//                 color: "lightgrey",
+//             },
+//             current: {
+//                 color: "red",
+//             }
+//         },
+//     },
+// });
+
+const useStyles = makeStyles({
     btn: {
-        backgroundColor: '#436185',
+        backgroundColor: '#4d71a1',
         '&:hover': {
-            backgroundColor: '#293852'
+            backgroundColor: '#2f4e78'
         }
     },
     field: {
         marginTop: 20,
         marginBottom: 20,
-        display: 'block'
+        display: 'block',
+        backgroundColor: 'white',
+        borderRadius: '5px'
     }
 })
 
-class AddDeadline extends Component {
-    state = {
-        title: "",
-        detail: "",
-        date: new Date()
-    }
+const AddDeadline = ({ uid, addDeadline }) => {
 
-    handleChange = (e) => {
-        this.setState({
-            [e.target.id]: e.target.value
-        })
-    }
+    const [title, setTitle] = useState("");
+    const [detail, setDetail] = useState("");
+    const [date, setDate] = useState(new Date());
 
-    handleSubmit = (e) => {
+    const [titleError, setTitleError] = useState(false);
+
+    let history = useHistory();
+
+    const handleSubmit = (e) => {
         e.preventDefault();
-        this.props.addDeadline(this.state);
+        if (title === "") {
+            setTitleError(true);
+            toast.error("Title required", {
+                position: "top-right",
+                autoClose: 2500,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+        else{
+            const deadline = { title, detail, date };
+            addDeadline(deadline);
+            history.push("/");
+        }
     }
 
-    handleDate = (date) => {
-        this.setState({
-            date: date
-        });
+    const handleDate = (date) => {
+        setDate(date);
     };
 
-    render() {
-        const { classes, uid } = this.props;
-        if(!uid) return <Redirect to="/signin" />
-        return (
-            <Container maxWidth='sm'>
+    const classes = useStyles();
+    if (!uid) return <Redirect to="/signin" />
+    return (
+        <Container maxWidth='sm'>
+            <ThemeProvider theme={theme}>
                 <MuiPickersUtilsProvider utils={DateFnsUtils}>
                     <form className="container" noValidate autoComplete="off" style={{
-                        padding: "1em",
+                        padding: "1em"
                     }}>
                         <div id="head" className="head" style={{
-                            backgroundColor: "#436185",
+                            backgroundColor: "#4d71a1",
                             margin: "20px auto",
                             boxSizing: "border-box",
                             padding: "10px 15px 10px 15px",
@@ -76,9 +171,10 @@ class AddDeadline extends Component {
                             label="Title"
                             type="text"
                             variant="outlined"
+                            error={titleError}
                             fullWidth
                             required
-                            onChange={this.handleChange} />
+                            onChange={(e) => setTitle(e.target.value)} />
 
                         <TextField
                             className={classes.field}
@@ -90,47 +186,50 @@ class AddDeadline extends Component {
                             multiline
                             rows={4}
                             fullWidth
-                            required
-                            onChange={this.handleChange} />
+                            onChange={(e) => setDetail(e.target.value)} />
 
                         <DatePicker
                             className={classes.field}
                             label="Date"
-                            value={this.state.date}
-                            onChange={this.handleDate}
+                            value={date}
+                            // variant="static"
+                            onChange={handleDate}
                             fullWidth
                             variant="dialog"
                             inputVariant="outlined"
                             format="dd MMMM yyyy"
                             minDate={new Date()}
+                            helperText="Initially set to today's date"
                             required
                             openTo="date" />
 
                         <TimePicker
                             className={classes.field}
                             label="Time"
-                            value={this.state.date}
-                            onChange={this.handleDate}
+                            value={date}
+                            onChange={handleDate}
                             fullWidth
                             variant="dialog"
                             inputVariant="outlined"
                             format="hh:mm a"
+                            helperText="Initially set to current time"
                             required />
 
                         <Button
                             className={classes.btn}
                             variant="contained"
                             color="secondary"
-                            onClick={this.handleSubmit}
+                            onClick={handleSubmit}
                             endIcon={<KeyboardArrowRightIcon />}>
                             ADD
                         </Button>
                     </form>
                 </MuiPickersUtilsProvider>
-            </Container>
-        )
-    }
+            </ThemeProvider>
+        </Container>
+    )
 }
+
 
 const mapStateToProps = (state) => {
     return {
@@ -144,7 +243,4 @@ const mapDispatchToProps = (dispatch) => {
     }
 }
 
-export default compose(
-    withStyles(styles, { withTheme: true }),
-    connect(mapStateToProps, mapDispatchToProps)
-)(AddDeadline);
+export default connect(mapStateToProps, mapDispatchToProps)(AddDeadline);

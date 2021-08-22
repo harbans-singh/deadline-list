@@ -1,72 +1,115 @@
-import { Component } from 'react'
 import Container from '@material-ui/core/Container';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import { withStyles } from "@material-ui/core/styles";
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
-import { compose } from "redux";
 import { connect } from "react-redux";
 import { signIn } from "../../actions/authActions";
 import { Redirect } from "react-router-dom";
+import { makeStyles } from "@material-ui/core";
+import { useState } from "react"
+import { toast } from "react-toastify";
+import { Link } from 'react-router-dom';
 
-const styles = (theme) => ({
+import { createTheme, ThemeProvider } from "@material-ui/core";
+
+const theme = createTheme({
+    palette: {
+        primary: {
+            light: "#4d71a1",
+            main: "#4d71a1",
+            dark: "#4d71a1"
+        }
+    },
+    typography: {
+        fontFamily: "Ubuntu",
+        fontWeightLight: 300,
+        fontWeightRegular: 400,
+        fontWeightMedium: 500,
+        fontWeightBold: 700, 
+    }
+})
+
+const useStyles = makeStyles({
     btn: {
-        backgroundColor: '#e53935',
-        '&:hover' : {
-            backgroundColor: '#b71c1c'
+        backgroundColor: '#4d71a1',
+        color: 'white',
+        '&:hover': {
+            backgroundColor: '#2f4e78'
         }
     },
     field: {
         marginTop: 20,
         marginBottom: 20,
-        display: 'block'
+        display: 'block',
+        backgroundColor: 'white',
+        borderRadius: '5px'
     }
 })
 
-class SignIn extends Component {
-    state = {
-        email: "",
-        password: ""
-    }
+const SignIn = ({ uid, signIn }) => {
 
-    handleChange = (e) => {
-        this.setState({
-            [e.target.id]: e.target.value,
-        });
-    };
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [emailError, setEmailError] = useState(false);
+    const [passwordError, setPasswordError] = useState(false);
 
-    handleSubmit = (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
-        this.props.signIn(this.state) 
+        setEmailError(false);
+        setPasswordError(false);
+        if (email === "" || password === "") {
+            if (email === "") {
+                setEmailError(true);
+            }
+            if (password === "") {
+                setPasswordError(true);
+            }
+            toast.error("Enter valid information", {
+                position: "top-right",
+                autoClose: 2500,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+        else {
+            const credentials = { email, password }
+            signIn(credentials);
+        }
     }
 
-    render() {
-        const { classes, uid } = this.props;
-        if(uid) return <Redirect to="/" />
-        return (
-            <Container maxWidth='sm'>
-                <form className="container" noValidate autoComplete="off" style={{
+
+    const classes = useStyles();
+    if (uid) return <Redirect to="/" />
+
+    return (
+        <Container maxWidth='sm'>
+            <ThemeProvider theme={theme}>
+                <form className="container" noValidate style={{
                     padding: "1em"
                 }} >
-                <div className="head" style={{
-                        backgroundColor: "#e53935",
+                    <div className="head" style={{
+                        backgroundColor: "#4d71a1",
                         margin: "20px auto",
                         boxSizing: "border-box",
                         padding: "10px 15px 10px 15px",
                         borderRadius: "5px",
                         color: "white",
-                        fontSize: "1.2rem"
+                        fontSize: "1.2em"
                     }}>Sign In</div>
 
                     <TextField
                         className={classes.field}
                         id="email"
                         label="Email"
-                        type="text"
+                        type="email"
                         variant="outlined"
+                        error={emailError}
                         fullWidth
                         required
-                        onChange={this.handleChange} />
+                        onChange={(e) => setEmail(e.target.value)} />
 
                     <TextField
                         className={classes.field}
@@ -75,22 +118,25 @@ class SignIn extends Component {
                         type="password"
                         autoComplete="current-password"
                         variant="outlined"
+                        error={passwordError}
                         fullWidth
                         required
-                        onChange={this.handleChange} />
+                        onChange={(e) => setPassword(e.target.value)} />
 
                     <Button
                         className={classes.btn}
                         variant="contained"
-                        color="secondary"
-                        onClick={ this.handleSubmit }
+                        onClick={handleSubmit}
                         endIcon={<KeyboardArrowRightIcon />}>
                         SIGN IN
                     </Button>
+                    <div className="forgot-link">
+                        <Link to="/forgotpassword">Forgot Password?</Link>
+                    </div>
                 </form>
-            </Container>
-        )
-    }
+            </ThemeProvider>
+        </Container>
+    )
 }
 
 const mapStateToProps = (state) => {
@@ -105,7 +151,4 @@ const mapDispatchToProps = (dispatch) => {
     }
 }
 
-export default compose(
-    withStyles(styles, { withTheme: true }),
-    connect(mapStateToProps, mapDispatchToProps)
-)(SignIn);
+export default connect(mapStateToProps, mapDispatchToProps)(SignIn);

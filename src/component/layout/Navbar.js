@@ -10,12 +10,12 @@ import { connect } from "react-redux";
 const useStyles = makeStyles((theme) => {
     return {
         navbar: {
-            backgroundColor: '#293852',
+            backgroundColor: '#122545',
             color: 'white',
         },
         title: {
             flexGrow: 1,
-            fontSize: '1.5em',
+            fontSize: '1.6em',
             [theme.breakpoints.down('xs')]: {
                 fontSize: "1.2em"
             },

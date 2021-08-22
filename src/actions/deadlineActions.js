@@ -11,6 +11,13 @@ export const addDeadline = (deadline) => {
                 authorLastName: profile.lastName,
                 authorId: authorId,
                 createdAt: new Date()
+            }).then((doc) => {
+                firestore
+                .collection("deadlines")
+                .doc(String(doc.id))
+                .update({
+                    id: doc.id
+                })
             })
             .then(() => {
                 dispatch({type: "ADD_DEADLINE", deadline});

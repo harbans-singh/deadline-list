@@ -6,22 +6,24 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 const useStyles = makeStyles({
     initials: {
-        backgroundColor: "#f72d5c",
-        color: "white",
+        backgroundColor: "#10e3bc",
+        color: "#1f2a3d",
         padding: "0.8em",
         borderRadius: "2em",
         marginLeft: "0.7em",
         minWidth: "1.4em",
-        minHeight: "1.5em"
+        minHeight: "1.5em",
+        textAlign: "center"
     },
     initials600px: {
-        backgroundColor: "#f72d5c",
-        color: "white",
+        backgroundColor: "#10e3bc",
+        color: "#1f2a3d",
         padding: "0.6em",
         borderRadius: "2em",
         marginLeft: "0.7em",
         minWidth: "1.4em",
-        minHeight: "1.5em"
+        minHeight: "1.5em",
+        textAlign: "center"
     }
 })
 

@@ -19,13 +19,12 @@ const store = createStore(rootReducer, applyMiddleware(thunk.withExtraArgument({
 
 const rrfConfig = {
   userProfile: "users",
-  useFirestoreForProfile: true
+  useFirestoreForProfile: true,
 }
 
 const rrfProps = {
   firebase,
   config: rrfConfig,
-  // config: {},
   dispatch: store.dispatch,
   createFirestoreInstance
 };

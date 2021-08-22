@@ -11,17 +11,17 @@ import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles({
     btn: {
-        backgroundColor: '#436185',
+        backgroundColor: '#4d71a1',
         marginTop: 20,
         color: "white",
         '&:hover': {
-            backgroundColor: '#293852'
+            backgroundColor: '#2f4e78'
         }
     }
 })
 
 
-const DeadlineDetail = ({deadlines, uid, removeDeadline}) => {
+const DeadlineDetail = ({deadline, uid, removeDeadline}) => {
     let history = useHistory();
 
     const classes = useStyles();
@@ -31,32 +31,33 @@ const DeadlineDetail = ({deadlines, uid, removeDeadline}) => {
         removeDeadline(deadline);
         history.push("/");
     }    
-    if(deadlines) {
-        const loc = window.location.pathname;
-        var deadlineid = loc.substr(loc.lastIndexOf('/') + 1);
-        const matcheddeadline = (deadlines.filter(deadline => deadline.authorId === uid));
-        const finalmatcheddeadline = (matcheddeadline.filter(deadline => deadline.id === deadlineid));
+    if(deadline) {
+        // const loc = window.location.pathname;
+        // var deadlineid = loc.substr(loc.lastIndexOf('/') + 1);
+        // const matcheddeadline = (deadlines.filter(deadline => deadline.authorId === uid));
+        // const finalmatcheddeadline = (matcheddeadline.filter(deadline => deadline.id === deadlineid));
         return (
             <div className="deadline-detail-container">
                 <div className="deadline-detail">
                     <div className="deadline-detail-title">
-                        {finalmatcheddeadline[0].title}
+                        {deadline[0].title}
                     </div>
                     <div className="deadline-detail-body">
-                        <p>{finalmatcheddeadline[0].detail}</p>
+                        <p>{deadline[0].detail}</p>
                     </div>
                     <div className="deadline-detail-footer">
                         <div className="deadline-detail-date">
-                            {"Added on: " + (new DateObject(finalmatcheddeadline[0].createdAt.seconds * 1000)).format("DD MMMM YYYY")}
+                            {"Added on: " + (new DateObject(deadline[0].createdAt.seconds * 1000)).format("DD MMMM YYYY")}
                         </div>
                         <div className="deadline-detail-time">
-                            {"At: " + (new DateObject(finalmatcheddeadline[0].createdAt.seconds * 1000)).format("hh:mm a")}
+                            {"At: " + (new DateObject(deadline[0].createdAt.seconds * 1000)).format("hh:mm a")}
                         </div>
                         <div className="deadline-detail-delete-btn">
                             <Button
                                 className={classes.btn}
                                 variant="contained"
-                                onClick={() => handleDelete(finalmatcheddeadline[0])}>
+                                onClick={() => handleDelete(deadline[0])}
+                                >
                                 DELETE
                             </Button>
                         </div>
@@ -110,13 +111,14 @@ const DeadlineDetail = ({deadlines, uid, removeDeadline}) => {
 }
 
 const mapStateToProps = (state) => {
-    // const loc = window.location.pathname;
-    // var deadlineid = loc.substr(loc.lastIndexOf('/') + 1);
+    const loc = window.location.pathname;
+    var deadlineid = loc.substr(loc.lastIndexOf('/') + 1);
     // const deadlines = state.firestore.data.deadlines;
     // const deadline = deadlines ? deadlines[deadlineid] : null
     return {
         // deadline: deadline,
-        deadlines: state.firestore.ordered.deadlines,
+        deadlineid: deadlineid,
+        deadline: state.firestore.ordered.deadlines,
         uid: state.firebase.auth.uid
     }
 }
@@ -130,6 +132,9 @@ const mapDispatchToProps = (dispatch) => {
 export default compose(
     connect(mapStateToProps, mapDispatchToProps),
     firestoreConnect((ownProps) => [
-        { collection: "deadlines" }
+        {
+            collection: "deadlines",
+            where: ["id", "==", ownProps.deadlineid],
+        }
     ])
 )(DeadlineDetail);
